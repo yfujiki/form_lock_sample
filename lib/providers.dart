@@ -1,0 +1,59 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:form_lock_sample/models.dart';
+import 'dart:io';
+
+class ImageFormStateNotifier extends StateNotifier<ImageForm> {
+  ImageFormStateNotifier(super.state);
+
+  void loadImageForItemId(String id, File image) {
+    final item = state.items.firstWhere((element) => element.id == id);
+    item.image = image;
+    item.imageLoaded = true;
+
+    final index = state.items.indexWhere((element) => element.id == id);
+    state.items.replaceRange(index, index + 1, [item]);
+  }
+}
+
+class FormStateNotifier extends StateNotifier<Form> {
+  FormStateNotifier(super.state);
+}
+
+final imageFormStateProvider =
+    StateNotifierProvider<ImageFormStateNotifier, ImageForm>((ref) {
+  return ImageFormStateNotifier(ImageForm([
+    ImageFormItem("1", "Image Form Q1", null, ["2", "3"]),
+    ImageFormItem("2", "Image Form Q1", null, ["1", "3"]),
+    ImageFormItem("3", "Image Form Q1", null, ["1", "2"]),
+  ]));
+});
+
+final formStateProvider = StateNotifierProvider<FormStateNotifier, Form>((ref) {
+  return FormStateNotifier(Form([
+    FormItem("1", "Form Q1"),
+    FormItem("2", "Form Q2"),
+    FormItem("3", "Form Q3"),
+  ]));
+});
+
+final lockedFormStateProvider = Provider<Form>((ref) {
+  final imageForm = ref.watch(imageFormStateProvider);
+  final form = ref.watch(formStateProvider);
+
+  final lockedFormItemIds =
+      imageForm.items.fold(<String>{}, (previousValue, element) {
+    if (element.imageLoaded) {
+      previousValue.addAll(element.relatedFormItemIds);
+    }
+    return previousValue;
+  });
+
+  final updatedFormItems = form.items.map((e) {
+    if (lockedFormItemIds.contains(e.id)) {
+      e.locked = true;
+    }
+    return e;
+  }).toList();
+
+  return Form(updatedFormItems);
+});
