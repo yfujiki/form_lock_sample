@@ -1,16 +1,12 @@
-# form_lock_sample
+# Form Lock Sample
 
-A new Flutter project.
+A sample code to lock form items when relevant image form item's image was uploaded.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+The key here is how to structure models. Here, I let `ImageFormItem` to include `relatedFormItemIds`, which are the list of `id`s of `FormItem` it is related to. Using this info, when an image is uploaded for `ImageFormItem`, you can lock related `FormItem`s.
 
-A few resources to get you started if this is your first Flutter project:
+## Demo
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+https://user-images.githubusercontent.com/879725/207986124-21b25c45-2997-422f-93de-5547aa072621.mov
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
