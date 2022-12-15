@@ -10,8 +10,14 @@ class ImageFormStateNotifier extends StateNotifier<ImageForm> {
     item.image = image;
     item.imageLoaded = true;
 
-    final index = state.items.indexWhere((element) => element.id == id);
-    state.items.replaceRange(index, index + 1, [item]);
+    final updatedItems = state.items.map((e) {
+      if (e.id == id) {
+        return item;
+      }
+      return e;
+    }).toList();
+
+    state = ImageForm(updatedItems);
   }
 }
 
