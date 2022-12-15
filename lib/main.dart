@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_lock_sample/providers.dart';
 
+import 'models.dart';
+
 void main() {
   runApp(const ProviderScope(
     child: MyApp(),
@@ -17,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Form Item Locking Demo',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -30,7 +32,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Form Item Locking Demo'),
     );
   }
 }
@@ -42,7 +44,7 @@ class MyHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final imageForm = ref.watch(imageFormStateProvider);
+    final imageForm = ref.watch(imageFormStateProvider);
     final form = ref.watch(lockedFormStateProvider);
     return Scaffold(
       appBar: AppBar(
@@ -51,34 +53,53 @@ class MyHomePage extends ConsumerWidget {
         title: Text(title),
       ),
       body: Center(
-          // Center is a layout widget. It takes a single child and positions it
-          // in the middle of the parent.
-          child: ListView(
-        children: form.items.map((e) {
-          if (e.locked) {
-            return ListTile(
-              title: Text(e.title),
-              trailing: const Icon(Icons.lock),
-            );
-          } else {
-            return ListTile(
-              title: Text(e.title),
-            );
-          }
-        }).toList(),
-      )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _uploadImage(ref);
-        },
-        tooltip: 'UploadImage',
-        child: const Icon(Icons.upload),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        // Center is a layout widget. It takes a single child and positions it
+        // in the middle of the parent.
+        child: ListView(
+          children: [
+            ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: form.items.map(
+                (e) {
+                  if (e.locked) {
+                    return ListTile(
+                      title: Text(e.title),
+                      trailing: const Icon(Icons.lock),
+                    );
+                  } else {
+                    return ListTile(
+                      title: Text(e.title),
+                    );
+                  }
+                },
+              ).toList(),
+            ),
+            const SizedBox(),
+            ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: imageForm.items.map((e) {
+                return ListTile(
+                  title: Text(e.title),
+                  trailing: MaterialButton(
+                    child: const Icon(Icons.upload),
+                    onPressed: () {
+                      _uploadImageFor(e, ref);
+                    },
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
-  void _uploadImage(WidgetRef ref) {
+  void _uploadImageFor(ImageFormItem item, WidgetRef ref) {
     final imageForm = ref.read(imageFormStateProvider.notifier);
-    imageForm.loadImageForItemId("1", File("pat_to_image"));
+    imageForm.loadImageForItemId(item.id, File("path_to_image"));
   }
 }

@@ -28,9 +28,9 @@ class FormStateNotifier extends StateNotifier<Form> {
 final imageFormStateProvider =
     StateNotifierProvider<ImageFormStateNotifier, ImageForm>((ref) {
   return ImageFormStateNotifier(ImageForm([
-    ImageFormItem("1", "Image Form Q1", null, ["2", "3"]),
-    ImageFormItem("2", "Image Form Q1", null, ["1", "3"]),
-    ImageFormItem("3", "Image Form Q1", null, ["1", "2"]),
+    ImageFormItem("1", "Image Form Q1, locks Form Q2", null, ["2"]),
+    ImageFormItem("2", "Image Form Q2, locks Form Q3", null, ["3"]),
+    ImageFormItem("3", "Image Form Q3, locks Form Q1,2", null, ["1", "2"]),
   ]));
 });
 
