@@ -2,9 +2,11 @@
 
 A sample code to lock form items when relevant image form item's image was uploaded.
 
-## Getting Started
+## Idea
 
 The key here is how to structure models. Here, I let `ImageFormItem` to include `relatedFormItemIds`, which are the list of `id`s of `FormItem` it is related to. Using this info, when an image is uploaded for `ImageFormItem`, you can lock related `FormItem`s.
+
+To propagate the model change to the view, I am using Riverpod, but can be anything like Provider, BLoC. However, I personally prefer Riverpod.
 
 ## Demo
 
